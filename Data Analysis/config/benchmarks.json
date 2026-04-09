@@ -1,0 +1,115 @@
+{
+  "_note": "Industry benchmarks per sector and metric. 'good' = threshold for Good flag, 'poor' = threshold for Poor flag. For lower-is-better metrics (cart_abandonment_rate, churn, refund_rate), good < poor. Sources updated April 2026 to align with Littledata (2,800 Shopify stores), MobiLoud, Opensend, Metrilo, and industry research.",
+
+  "fashion": {
+    "conversion_rate":       { "good": 4.3,  "poor": 1.0,  "source": "Littledata 2023 - fashion average 1.9%, top 20% at 4.3%" },
+    "aov":                   { "good": 120.0, "poor": 35.0, "source": "Littledata Shopify AOV + fashion sector adjustment" },
+    "add_to_cart_rate":      { "good": 8.0,  "poor": 3.0,  "source": "Littledata - fashion ATC average 5.4%, top 20% ~8%" },
+    "cart_abandonment_rate": { "good": 65.0, "poor": 78.0, "source": "Baymard Institute 2025 - fashion average ~70%" },
+    "clv":                   { "good": 250.0, "poor": 100.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 55.0, "poor": 70.0, "source": "Industry average fashion churn 55-70%" },
+    "sessions":              { "good": 15000, "poor": 3000, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 15.0, "poor": 30.0, "source": "Fashion return rate average 20-30%, good brands under 15%" },
+    "repeat_purchase_rate":  { "good": 30.0, "poor": 15.0, "source": "Opensend / MobiLoud - fashion average 20-25%" },
+    "total_orders":          { "good": 500,  "poor": 100,  "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 100000, "poor": 20000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "beauty": {
+    "conversion_rate":       { "good": 4.5,  "poor": 1.5,  "source": "Littledata + beauty replenishment uplift - average 2.5-3.5%" },
+    "aov":                   { "good": 80.0, "poor": 25.0, "source": "Shopify beauty AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 9.0,  "poor": 4.0,  "source": "Littledata - beauty ATC ~6% average" },
+    "cart_abandonment_rate": { "good": 62.0, "poor": 75.0, "source": "Baymard Institute 2025 - beauty average ~68%" },
+    "clv":                   { "good": 200.0, "poor": 80.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 45.0, "poor": 60.0, "source": "Beauty churn average 45-60% - lower than fashion due to replenishment" },
+    "sessions":              { "good": 12000, "poor": 2500, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 4.0,  "poor": 12.0, "source": "Beauty returns low by nature - average 5-8%" },
+    "repeat_purchase_rate":  { "good": 40.0, "poor": 20.0, "source": "MobiLoud / Metrilo - beauty average 25-35%" },
+    "total_orders":          { "good": 400,  "poor": 80,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 80000, "poor": 15000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "electronics": {
+    "conversion_rate":       { "good": 3.5,  "poor": 1.0,  "source": "Electronics average 1.5-2.5%, top performers 3.5%+" },
+    "aov":                   { "good": 280.0, "poor": 80.0, "source": "Electronics high-ticket AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 6.5,  "poor": 2.5,  "source": "Electronics ATC lower due to high consideration" },
+    "cart_abandonment_rate": { "good": 68.0, "poor": 82.0, "source": "Baymard Institute 2025 - electronics average ~74%" },
+    "clv":                   { "good": 350.0, "poor": 120.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 65.0, "poor": 80.0, "source": "Electronics churn high due to long replacement cycles - average 65-80%" },
+    "sessions":              { "good": 20000, "poor": 5000, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 7.0,  "poor": 18.0, "source": "Electronics returns average 8-15%" },
+    "repeat_purchase_rate":  { "good": 25.0, "poor": 10.0, "source": "MobiLoud - electronics average 10-20%" },
+    "total_orders":          { "good": 300,  "poor": 60,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 150000, "poor": 30000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "home": {
+    "conversion_rate":       { "good": 3.5,  "poor": 1.0,  "source": "Home average 1.5-2.5%, top performers 3.5%+" },
+    "aov":                   { "good": 200.0, "poor": 50.0, "source": "Home/living AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 7.0,  "poor": 3.0,  "source": "Home ATC average ~4.5%" },
+    "cart_abandonment_rate": { "good": 66.0, "poor": 80.0, "source": "Baymard Institute 2025 - home average ~72%" },
+    "clv":                   { "good": 280.0, "poor": 100.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 60.0, "poor": 75.0, "source": "Home churn high due to long purchase cycles - average 60-75%" },
+    "sessions":              { "good": 10000, "poor": 2000, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 8.0,  "poor": 20.0, "source": "Home returns average 10-15%" },
+    "repeat_purchase_rate":  { "good": 25.0, "poor": 10.0, "source": "Home average 12-20% - long purchase cycles suppress repeat rate" },
+    "total_orders":          { "good": 250,  "poor": 50,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 80000, "poor": 15000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "sports": {
+    "conversion_rate":       { "good": 3.5,  "poor": 1.0,  "source": "Sports average 1.5-2.5%, top performers 3.5%+" },
+    "aov":                   { "good": 180.0, "poor": 45.0, "source": "Sports AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 8.0,  "poor": 3.0,  "source": "Sports ATC average ~5%" },
+    "cart_abandonment_rate": { "good": 64.0, "poor": 78.0, "source": "Baymard Institute 2025 - sports average ~70%" },
+    "clv":                   { "good": 240.0, "poor": 90.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 55.0, "poor": 70.0, "source": "Sports churn average 55-70%" },
+    "sessions":              { "good": 18000, "poor": 4000, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 8.0,  "poor": 22.0, "source": "Sports returns average 10-18%" },
+    "repeat_purchase_rate":  { "good": 35.0, "poor": 15.0, "source": "Sports average 20-28%" },
+    "total_orders":          { "good": 450,  "poor": 90,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 100000, "poor": 20000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "food_beverage": {
+    "conversion_rate":       { "good": 4.1,  "poor": 1.0,  "source": "Littledata 2023 - food/beverage top 20% at 4.1%" },
+    "aov":                   { "good": 70.0, "poor": 20.0, "source": "Food/beverage AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 8.0,  "poor": 3.0,  "source": "Littledata - food ATC average 4.8%" },
+    "cart_abandonment_rate": { "good": 58.0, "poor": 72.0, "source": "Food/beverage lower abandonment - average ~65%" },
+    "clv":                   { "good": 180.0, "poor": 70.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 40.0, "poor": 55.0, "source": "Food churn low due to replenishment - average 40-55%" },
+    "sessions":              { "good": 12000, "poor": 2500, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 2.0,  "poor": 8.0,  "source": "Food returns very low by nature - average 2-5%" },
+    "repeat_purchase_rate":  { "good": 50.0, "poor": 25.0, "source": "Food/beverage highest repeat rate - average 30-45%" },
+    "total_orders":          { "good": 400,  "poor": 80,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 60000, "poor": 10000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "luxury": {
+    "conversion_rate":       { "good": 2.5,  "poor": 0.5,  "source": "Luxury average 0.8-1.5% - low conversion is structurally normal" },
+    "aov":                   { "good": 500.0, "poor": 120.0, "source": "Luxury AOV benchmarks" },
+    "add_to_cart_rate":      { "good": 6.0,  "poor": 2.0,  "source": "Luxury ATC average 2.5-4%" },
+    "cart_abandonment_rate": { "good": 72.0, "poor": 85.0, "source": "Luxury abandonment high - average ~78%" },
+    "clv":                   { "good": 800.0, "poor": 300.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 65.0, "poor": 80.0, "source": "Luxury churn average 65-80%" },
+    "sessions":              { "good": 8000, "poor": 1500, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 5.0,  "poor": 15.0, "source": "Luxury returns average 6-10%" },
+    "repeat_purchase_rate":  { "good": 25.0, "poor": 8.0,  "source": "Luxury repeat rate average 10-20%" },
+    "total_orders":          { "good": 150,  "poor": 30,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 150000, "poor": 30000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  },
+
+  "default": {
+    "conversion_rate":       { "good": 3.2,  "poor": 1.0,  "source": "Littledata 2023 - Shopify average 1.4%, top 20% at 3.2%" },
+    "aov":                   { "good": 175.0, "poor": 50.0, "source": "Littledata - Shopify top 20% AOV $192, bottom 20% $54" },
+    "add_to_cart_rate":      { "good": 7.5,  "poor": 3.0,  "source": "Littledata - Shopify average 4.6%, top 20% at 7.5%" },
+    "cart_abandonment_rate": { "good": 65.0, "poor": 80.0, "source": "Baymard Institute 2025 - average ~70%" },
+    "clv":                   { "good": 200.0, "poor": 80.0, "source": "Napps internal benchmark" },
+    "churn":                 { "good": 55.0, "poor": 70.0, "source": "General ecommerce churn average 60-70%" },
+    "sessions":              { "good": 15000, "poor": 3000, "source": "Peer rank preferred - absolute threshold as fallback" },
+    "refund_rate":           { "good": 8.0,  "poor": 18.0, "source": "General ecommerce return rate average 8-10%" },
+    "repeat_purchase_rate":  { "good": 35.0, "poor": 15.0, "source": "Opensend - ecommerce average ~28%" },
+    "total_orders":          { "good": 400,  "poor": 80,   "source": "Peer rank preferred - absolute threshold as fallback" },
+    "total_sales":           { "good": 80000, "poor": 15000, "source": "Peer rank preferred - absolute threshold as fallback" }
+  }
+}

@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Napps — Monthly Report Pipeline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f8f9fb;
+      color: #1e1e2e;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 960px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #6d28d9;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 40px;
+    }
+
+    /* ---- flow container ---- */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ---- arrow between steps ---- */
+    .arrow {
+      width: 2px;
+      height: 28px;
+      background: #c4b5fd;
+      position: relative;
+    }
+    .arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 8px solid #c4b5fd;
+    }
+    .arrow-label {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: #a78bfa;
+      font-style: italic;
+      white-space: nowrap;
+    }
+    .arrow.tall { height: 40px; }
+
+    /* ---- step card ---- */
+    .step {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 14px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .step-body { flex: 1; }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .step-script {
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #6d28d9;
+      background: #f3f0ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 13.5px;
+      color: #4b5563;
+      line-height: 1.55;
+    }
+
+    .step-output {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .step-output b { color: #6b7280; }
+
+    /* ---- sub-steps ---- */
+    .substeps {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .substep {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #f3f4f6;
+    }
+    .substep-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .substep-text {
+      font-size: 12.5px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    .substep-text strong { color: #1e1e2e; }
+
+    /* ---- detail boxes inside steps ---- */
+    .detail-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .detail-box {
+      padding: 10px 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #f3f4f6;
+    }
+    .detail-box .detail-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+      margin-bottom: 3px;
+    }
+    .detail-box .detail-value {
+      font-size: 12.5px;
+      color: #1e1e2e;
+      line-height: 1.4;
+    }
+
+    /* ---- metric pills ---- */
+    .metric-pills {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .metric-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: #ede9fe;
+      color: #6d28d9;
+      font-weight: 600;
+    }
+
+    /* ---- scoring visual ---- */
+    .scoring-visual {
+      margin-top: 10px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .signal-block {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .signal-block .signal-weight {
+      font-weight: 700;
+      font-size: 14px;
+      display: block;
+    }
+    .signal-block.s1 { background: #dbeafe; color: #1e40af; }
+    .signal-block.s2 { background: #ede9fe; color: #5b21b6; }
+    .signal-block.s3 { background: #fce7f3; color: #9d174d; }
+    .signal-block.s4 { background: #d1fae5; color: #065f46; }
+    .signal-plus { font-size: 18px; color: #c4b5fd; font-weight: 700; }
+    .signal-equals { font-size: 18px; color: #c4b5fd; font-weight: 700; }
+
+    /* ---- flag badges ---- */
+    .flag-badges {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+    }
+    .flag-badge {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .flag-badge.good { background: #d1fae5; color: #065f46; }
+    .flag-badge.average { background: #fef3c7; color: #92400e; }
+    .flag-badge.poor { background: #fee2e2; color: #991b1b; }
+
+    /* ---- colour bands ---- */
+    .phase-fetch .step-number  { background: #2563eb; }
+    .phase-fetch .step         { border-left: 4px solid #2563eb; }
+    .phase-fetch .substep-icon { background: #2563eb; }
+
+    .phase-process .step-number { background: #7c3aed; }
+    .phase-process .step        { border-left: 4px solid #7c3aed; }
+    .phase-process .substep-icon { background: #7c3aed; }
+
+    .phase-ai .step-number     { background: #db2777; }
+    .phase-ai .step            { border-left: 4px solid #db2777; }
+    .phase-ai .substep-icon    { background: #db2777; }
+
+    .phase-render .step-number { background: #059669; }
+    .phase-render .step        { border-left: 4px solid #059669; }
+    .phase-render .substep-icon { background: #059669; }
+
+    .phase-save .step-number   { background: #d97706; }
+    .phase-save .step          { border-left: 4px solid #d97706; }
+    .phase-save .substep-icon  { background: #d97706; }
+
+    /* ---- phase labels ---- */
+    .phase-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+      color: #fff;
+      margin-bottom: 4px;
+      margin-top: 8px;
+    }
+    .phase-label.data    { background: #2563eb; }
+    .phase-label.compute { background: #7c3aed; }
+    .phase-label.ai      { background: #db2777; }
+    .phase-label.output  { background: #059669; }
+    .phase-label.store   { background: #d97706; }
+
+    /* ---- config block ---- */
+    .config-block {
+      width: 100%;
+      max-width: 760px;
+      border: 2px dashed #c4b5fd;
+      border-radius: 14px;
+      padding: 20px 28px;
+      background: #faf5ff;
+      margin-bottom: 4px;
+    }
+    .config-block h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6d28d9;
+      margin-bottom: 10px;
+    }
+    .config-items {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .config-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .config-item .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .config-item .value {
+      font-size: 13px;
+      color: #1e1e2e;
+      margin-top: 2px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .config-item .hint {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* ---- final result ---- */
+    .result {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 14px;
+      padding: 28px;
+      background: linear-gradient(135deg, #6d28d9, #7c3aed);
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(109, 40, 217, 0.25);
+    }
+    .result h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .result p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .result-items {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 16px;
+    }
+    .result-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .result-item .big {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .result-item .small {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .result-detail {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .result-file {
+      background: rgba(255,255,255,0.15);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ---- legend ---- */
+    .legend {
+      margin-top: 36px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* ---- trigger command ---- */
+    .trigger {
+      margin-top: 28px;
+      text-align: center;
+    }
+    .trigger code {
+      background: #1e1e2e;
+      color: #a5f3fc;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      display: inline-block;
+    }
+    .trigger p {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    /* ---- architecture note ---- */
+    .arch-note {
+      margin-top: 36px;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px 24px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .arch-note h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6d28d9;
+      margin-bottom: 12px;
+    }
+    .arch-layers {
+      display: flex;
+      gap: 12px;
+    }
+    .arch-layer {
+      flex: 1;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .arch-layer.workflows { background: #dbeafe; }
+    .arch-layer.agent { background: #ede9fe; }
+    .arch-layer.tools { background: #d1fae5; }
+    .arch-layer .arch-icon { font-size: 22px; margin-bottom: 4px; }
+    .arch-layer .arch-name { font-size: 13px; font-weight: 700; color: #1e1e2e; }
+    .arch-layer .arch-desc { font-size: 11px; color: #4b5563; margin-top: 3px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Napps Monthly Report Pipeline</h1>
+  <p class="subtitle">Automated brand performance analysis for ~50 brands &mdash; WAT Framework (Workflows, Agents, Tools)</p>
+
+  <div class="flow">
+
+    <!-- CONFIG -->
+    <div class="config-block">
+      <h3>Configuration (one-time setup)</h3>
+      <div class="config-items">
+        <div class="config-item">
+          <div class="label">API Credentials</div>
+          <div class="value">.env</div>
+          <div class="hint">Anthropic API key + Napps client ID &amp; secret per brand</div>
+        </div>
+        <div class="config-item">
+          <div class="label">Brand List</div>
+          <div class="value">config/brands.json</div>
+          <div class="hint">Name, sector, thresholds, active status for each brand</div>
+        </div>
+        <div class="config-item">
+          <div class="label">Industry Benchmarks</div>
+          <div class="value">config/benchmarks.json</div>
+          <div class="hint">Good/Poor thresholds per sector &amp; metric</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">reads config</span>
+    </div>
+
+    <!-- =========================================================
+         PHASE 1: DATA COLLECTION
+         ========================================================= -->
+    <div class="phase-label data">Phase 1 &mdash; Data Collection</div>
+
+    <div class="phase-fetch">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <div class="step-title">Fetch Napps Data</div>
+          <div class="step-script">fetch_napps.py</div>
+          <div class="step-desc">
+            Connects to the Napps REST API for each active brand and downloads all ecommerce data for the target month.
+          </div>
+
+          <div class="substeps">
+            <div class="substep">
+              <div class="substep-icon">a</div>
+              <div class="substep-text"><strong>Authenticate</strong> &mdash; Uses OAuth2 (client ID + secret) to get an access token from the Napps auth server</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">b</div>
+              <div class="substep-text"><strong>Request metrics</strong> &mdash; Calls the analytics endpoint with the date range and brand ID</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">c</div>
+              <div class="substep-text"><strong>Save raw data</strong> &mdash; Writes one JSON file per brand to the temporary folder</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:12px; color:#6b7280; font-weight:600;">7 metrics collected per brand:</div>
+          <div class="metric-pills">
+            <span class="metric-pill">Total Sales</span>
+            <span class="metric-pill">Conversion Rate</span>
+            <span class="metric-pill">AOV</span>
+            <span class="metric-pill">Add-to-Cart Rate</span>
+            <span class="metric-pill">Cart Abandonment</span>
+            <span class="metric-pill">CLV</span>
+            <span class="metric-pill">Churn</span>
+          </div>
+
+          <div class="step-output"><b>Output:</b> .tmp/raw/napps/{brand}_YYYY_MM.json &mdash; one file per brand (~50 files)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">raw JSON files</span>
+    </div>
+
+    <!-- =========================================================
+         PHASE 2: DATA PROCESSING
+         ========================================================= -->
+    <div class="phase-label compute">Phase 2 &mdash; Data Processing</div>
+
+    <div class="phase-process">
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <div class="step-title">Process &amp; Compute Deltas</div>
+          <div class="step-script">merge_metrics.py</div>
+          <div class="step-desc">
+            Takes the raw data from Step 1, loads last month's saved snapshot, and calculates
+            how each metric changed compared to the previous month.
+          </div>
+
+          <div class="substeps">
+            <div class="substep">
+              <div class="substep-icon">a</div>
+              <div class="substep-text"><strong>Load raw files</strong> &mdash; Reads all the brand JSON files from .tmp/raw/napps/</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">b</div>
+              <div class="substep-text"><strong>Load prior month</strong> &mdash; Reads last month's snapshot from data/snapshots/ (if it exists)</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">c</div>
+              <div class="substep-text"><strong>Calculate MoM %</strong> &mdash; For each metric: ((this month - last month) / last month) &times; 100</div>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">Example</div>
+              <div class="detail-value">If last month's conversion rate was 3.0% and this month is 3.6%, the MoM change = +20%</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">First run?</div>
+              <div class="detail-value">No prior data exists yet, so all MoM deltas will be empty. This is normal &mdash; they appear from month 2 onwards.</div>
+            </div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> .tmp/processed/metrics_YYYY_MM.json &mdash; unified file with all brands + deltas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">metrics + deltas</span>
+    </div>
+
+    <div class="phase-process">
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <div class="step-title">Score &amp; Flag Brands</div>
+          <div class="step-script">score_brands.py</div>
+          <div class="step-desc">
+            The core intelligence of the system. For every metric of every brand, it checks 4 different
+            signals and combines them into a single score. That score determines the flag.
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:#6b7280; font-weight:600;">4 scoring signals per metric:</div>
+          <div class="scoring-visual">
+            <div class="signal-block s1">
+              <span class="signal-weight">35%</span>
+              Sector<br>Threshold
+            </div>
+            <div class="signal-plus">+</div>
+            <div class="signal-block s2">
+              <span class="signal-weight">35%</span>
+              Industry<br>Benchmark
+            </div>
+            <div class="signal-plus">+</div>
+            <div class="signal-block s3">
+              <span class="signal-weight">15%</span>
+              MoM<br>Trend
+            </div>
+            <div class="signal-plus">+</div>
+            <div class="signal-block s4">
+              <span class="signal-weight">15%</span>
+              Peer<br>Rank
+            </div>
+            <div class="signal-equals">=</div>
+            <div style="text-align:center;">
+              <div style="font-weight:700; font-size:14px;">Score</div>
+              <div style="font-size:11px; color:#6b7280;">0 &ndash; 2</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:#6b7280; font-weight:600;">Score maps to a flag:</div>
+          <div class="flag-badges">
+            <div class="flag-badge good">Good &ge; 1.5</div>
+            <div class="flag-badge average">Average &ge; 0.8</div>
+            <div class="flag-badge poor">Poor &lt; 0.8</div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> .tmp/processed/peer_ranks_YYYY_MM.json &mdash; all brands with scores + flags</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">scored data</span>
+    </div>
+
+    <!-- =========================================================
+         PHASE 3: AI ANALYSIS
+         ========================================================= -->
+    <div class="phase-label ai">Phase 3 &mdash; AI Analysis</div>
+
+    <div class="phase-ai">
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-body">
+          <div class="step-title">Generate AI Insights</div>
+          <div class="step-script">generate_insights.py</div>
+          <div class="step-desc">
+            Sends each brand's scored data to <b>Claude AI</b> (Anthropic's language model).
+            The AI acts as a senior ecommerce analyst and writes a personalised analysis for each brand.
+          </div>
+
+          <div class="substeps">
+            <div class="substep">
+              <div class="substep-icon">a</div>
+              <div class="substep-text"><strong>Build prompt</strong> &mdash; Formats the brand's metrics, flags, trends, and peer ranking into a structured prompt</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">b</div>
+              <div class="substep-text"><strong>Call Claude API</strong> &mdash; Sends the prompt to claude-sonnet-4-6 (~50 API calls, one per brand)</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">c</div>
+              <div class="substep-text"><strong>Parse response</strong> &mdash; Extracts the structured JSON with summaries and recommendations</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; font-size:12px; color:#6b7280; font-weight:600;">AI generates 3 things per brand:</div>
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">Executive Summary</div>
+              <div class="detail-value">2-3 sentence narrative overview highlighting the overall flag, best metric, and biggest concern</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Metric Narratives</div>
+              <div class="detail-value">2-3 sentences per metric explaining what the number means in context</div>
+            </div>
+            <div class="detail-box" style="grid-column: 1 / -1;">
+              <div class="detail-label">Improvement Recommendations</div>
+              <div class="detail-value">3-5 prioritised actions (High/Medium/Low) with specific, practical advice for the brand's sector</div>
+            </div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> Insights added to peer_ranks_YYYY_MM.json (same file, enriched)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">enriched data</span>
+    </div>
+
+    <!-- =========================================================
+         PHASE 4: REPORT GENERATION
+         ========================================================= -->
+    <div class="phase-label output">Phase 4 &mdash; Report Generation</div>
+
+    <div class="phase-render">
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-body">
+          <div class="step-title">Render PDF Reports</div>
+          <div class="step-script">render_pdf.py</div>
+          <div class="step-desc">
+            Generates a professional 5-page A4 PDF report for each brand, using an HTML/CSS template
+            converted to PDF by WeasyPrint.
+          </div>
+
+          <div style="margin-top:10px; font-size:12px; color:#6b7280; font-weight:600;">5 pages per PDF:</div>
+          <div class="substeps">
+            <div class="substep">
+              <div class="substep-icon">1</div>
+              <div class="substep-text"><strong>Cover page</strong> &mdash; Brand name, period, overall flag badge, executive summary quote</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">2</div>
+              <div class="substep-text"><strong>Executive summary</strong> &mdash; Full narrative + metrics-at-a-glance table with flags and peer ranks</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">3</div>
+              <div class="substep-text"><strong>Metric deep-dives</strong> &mdash; Each metric with value, trend, thresholds, benchmarks, and AI narrative</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">4</div>
+              <div class="substep-text"><strong>Recommendations</strong> &mdash; AI-generated improvement actions, sorted by priority</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">5</div>
+              <div class="substep-text"><strong>Appendix</strong> &mdash; Raw data table, data sources, and any quality warnings</div>
+            </div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> .tmp/reports/pdf/{brand}_YYYY_MM.pdf &mdash; ~50 PDF files</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="phase-render">
+      <div class="step">
+        <div class="step-number">6</div>
+        <div class="step-body">
+          <div class="step-title">Render Excel Workbook</div>
+          <div class="step-script">render_excel.py</div>
+          <div class="step-desc">
+            Creates a single Excel file with all brands side-by-side, designed for managers
+            who want to compare, filter, and sort across the entire portfolio.
+          </div>
+
+          <div style="margin-top:10px; font-size:12px; color:#6b7280; font-weight:600;">3 sheets in the workbook:</div>
+          <div class="substeps">
+            <div class="substep">
+              <div class="substep-icon">1</div>
+              <div class="substep-text"><strong>Overview</strong> &mdash; All brands with colour-coded flag cells (green/yellow/red), auto-filters, frozen header</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">2</div>
+              <div class="substep-text"><strong>Recommendations</strong> &mdash; AI recommendations per brand, sorted by priority</div>
+            </div>
+            <div class="substep">
+              <div class="substep-icon">3</div>
+              <div class="substep-text"><strong>Raw Data</strong> &mdash; All numeric values, MoM changes, scores, and peer ranks</div>
+            </div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> .tmp/reports/excel/brand_performance_YYYY_MM.xlsx</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">report files</span>
+    </div>
+
+    <!-- =========================================================
+         PHASE 5: STORAGE
+         ========================================================= -->
+    <div class="phase-label store">Phase 5 &mdash; Storage</div>
+
+    <div class="phase-save">
+      <div class="step">
+        <div class="step-number">7</div>
+        <div class="step-body">
+          <div class="step-title">Save Historical Snapshot</div>
+          <div class="step-script">save_snapshot.py</div>
+          <div class="step-desc">
+            Saves this month's processed data as a local snapshot file. This is what enables
+            Month-over-Month comparisons &mdash; next month's Step 2 will read this file to calculate deltas.
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">How it works</div>
+              <div class="detail-value">Month 1: no prior data, no deltas. Month 2: reads Month 1's snapshot, calculates changes. Month 3: reads Month 2, etc.</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Data grows over time</div>
+              <div class="detail-value">Each month adds one snapshot file. After 12 months you have a full year of history for trending.</div>
+            </div>
+          </div>
+
+          <div class="step-output"><b>Output:</b> data/snapshots/YYYY_MM.json</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <div class="phase-save">
+      <div class="step">
+        <div class="step-number">8</div>
+        <div class="step-body">
+          <div class="step-title">Organise Reports</div>
+          <div class="step-script">organize_reports.py</div>
+          <div class="step-desc">
+            Moves all generated PDFs and the Excel workbook from the temporary folder into
+            a clean, date-stamped output directory that's easy to find and share.
+          </div>
+          <div class="step-output"><b>Output:</b> outputs/YYYY_MM/ &mdash; final folder with all deliverables</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow tall" style="position:relative">
+      <span class="arrow-label">done!</span>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result">
+      <h3>Pipeline Complete</h3>
+      <p>All reports ready for delivery</p>
+      <div class="result-items">
+        <div class="result-item">
+          <span class="big">~50</span>
+          <span class="small">PDF Reports</span>
+        </div>
+        <div class="result-item">
+          <span class="big">1</span>
+          <span class="small">Excel Workbook</span>
+        </div>
+        <div class="result-item">
+          <span class="big">7</span>
+          <span class="small">Metrics Tracked</span>
+        </div>
+        <div class="result-item">
+          <span class="big">4</span>
+          <span class="small">Scoring Signals</span>
+        </div>
+      </div>
+      <div class="result-detail">
+        <span class="result-file">outputs/2026_02/brand_a.pdf</span>
+        <span class="result-file">outputs/2026_02/brand_b.pdf</span>
+        <span class="result-file">outputs/2026_02/performance.xlsx</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div> Data Collection</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div> Processing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#db2777"></div> AI Analysis</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#059669"></div> Report Generation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div> Storage</div>
+  </div>
+
+  <!-- TRIGGER -->
+  <div class="trigger">
+    <code>python tools/trigger_monthly_report.py</code>
+    <p>Single command runs the entire pipeline &middot; Scheduled automatically on the 2nd of each month at 08:00</p>
+  </div>
+
+  <!-- ARCHITECTURE NOTE -->
+  <div class="arch-note">
+    <h3>Architecture: WAT Framework</h3>
+    <div class="arch-layers">
+      <div class="arch-layer workflows">
+        <div class="arch-icon">W</div>
+        <div class="arch-name">Workflows</div>
+        <div class="arch-desc">Markdown files that define <em>what</em> to do, step by step. The instructions.</div>
+      </div>
+      <div class="arch-layer agent">
+        <div class="arch-icon">A</div>
+        <div class="arch-name">Agents</div>
+        <div class="arch-desc">AI reads workflows, makes decisions, handles errors. The orchestrator.</div>
+      </div>
+      <div class="arch-layer tools">
+        <div class="arch-icon">T</div>
+        <div class="arch-name">Tools</div>
+        <div class="arch-desc">Python scripts that do the actual work. Deterministic and testable.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

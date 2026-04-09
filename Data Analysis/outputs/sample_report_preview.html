@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Acme UK — Performance Report 2026-02</title>
+  <style>
+/* ============================================================
+   Napps Monthly Brand Performance Report — Preview Stylesheet
+   ============================================================ */
+
+@page {
+    size: A4 portrait;
+    margin: 20mm 18mm 20mm 18mm;
+}
+
+@page cover {
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    color: #1f2937;
+    line-height: 1.55;
+    max-width: 210mm;
+    margin: 0 auto;
+    background: #f9fafb;
+}
+
+/* ===== Colour system ===== */
+:root {
+    --good:    #16a34a;
+    --good-bg: #dcfce7;
+    --avg:     #d97706;
+    --avg-bg:  #fef9c3;
+    --poor:    #dc2626;
+    --poor-bg: #fee2e2;
+    --napps:   #6d28d9;
+    --muted:   #6b7280;
+    --border:  #e5e7eb;
+}
+
+/* ===== Page breaks ===== */
+.page-break {
+    page-break-after: always;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.no-break { page-break-inside: avoid; }
+
+/* ===== Cover page ===== */
+.cover {
+    page: cover;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(160deg, #1e1b4b 0%, #4c1d95 100%);
+    color: white;
+    padding: 24mm 20mm;
+}
+
+.cover-logo {
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: white;
+    margin-bottom: 2mm;
+}
+
+.cover-tagline {
+    font-size: 9pt;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30mm;
+}
+
+.cover-brand {
+    font-size: 32pt;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 4mm;
+}
+
+.cover-period {
+    font-size: 13pt;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 10mm;
+}
+
+.cover-flag-badge {
+    display: inline-block;
+    padding: 3mm 8mm;
+    border-radius: 50px;
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.cover-flag-badge.good    { background: var(--good-bg); color: var(--good); }
+.cover-flag-badge.average { background: var(--avg-bg);  color: var(--avg); }
+.cover-flag-badge.poor    { background: var(--poor-bg); color: var(--poor); }
+
+.cover-summary {
+    margin-top: auto;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 6mm;
+    font-style: italic;
+}
+
+/* ===== Section headers ===== */
+.section-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--napps);
+    border-bottom: 2px solid var(--napps);
+    padding-bottom: 2mm;
+    margin-bottom: 5mm;
+    margin-top: 6mm;
+}
+
+.sub-title {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 5mm;
+    margin-bottom: 2mm;
+}
+
+/* ===== Flag badges (inline) ===== */
+.badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 12px;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.badge.good    { background: var(--good-bg);  color: var(--good); }
+.badge.average { background: var(--avg-bg);   color: var(--avg); }
+.badge.poor    { background: var(--poor-bg);  color: var(--poor); }
+.badge.unknown { background: #f3f4f6;         color: var(--muted); }
+
+.badge.priority-high   { background: #fee2e2; color: #dc2626; }
+.badge.priority-medium { background: #fef9c3; color: #d97706; }
+.badge.priority-low    { background: #dbeafe; color: #1d4ed8; }
+
+/* ===== Metrics overview table ===== */
+table.metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-top: 3mm;
+}
+
+table.metrics-table th {
+    background: #f3f4f6;
+    color: #374151;
+    font-weight: 600;
+    text-align: left;
+    padding: 2.5mm 3mm;
+    border-bottom: 1px solid var(--border);
+}
+
+table.metrics-table td {
+    padding: 2.5mm 3mm;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+table.metrics-table tr:last-child td { border-bottom: none; }
+
+.mom-up   { color: var(--good); font-weight: 600; }
+.mom-down { color: var(--poor); font-weight: 600; }
+.mom-flat { color: var(--muted); }
+
+/* ===== Metric deep-dive cards ===== */
+.metric-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4mm 5mm;
+    margin-bottom: 4mm;
+    page-break-inside: avoid;
+    background: white;
+}
+
+.metric-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2mm;
+}
+
+.metric-card-name {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #111827;
+}
+
+.metric-card-value {
+    font-size: 14pt;
+    font-weight: 800;
+    color: var(--napps);
+    margin-bottom: 1mm;
+}
+
+.metric-card-context {
+    font-size: 8pt;
+    color: var(--muted);
+    margin-bottom: 2mm;
+}
+
+.metric-card-narrative {
+    font-size: 9pt;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* ===== Recommendation cards ===== */
+.recommendation {
+    border-left: 4px solid var(--napps);
+    padding: 3mm 4mm;
+    margin-bottom: 4mm;
+    background: #fafafa;
+    page-break-inside: avoid;
+}
+
+.recommendation.high   { border-left-color: var(--poor); }
+.recommendation.medium { border-left-color: var(--avg); }
+.recommendation.low    { border-left-color: #1d4ed8; }
+
+.recommendation-title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5mm;
+}
+
+.recommendation-text {
+    font-size: 9pt;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+/* ===== Appendix / data table ===== */
+table.raw-data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+    margin-top: 3mm;
+}
+
+table.raw-data th {
+    background: #f3f4f6;
+    padding: 2mm 2.5mm;
+    border: 1px solid var(--border);
+    font-weight: 600;
+    text-align: left;
+}
+
+table.raw-data td {
+    padding: 2mm 2.5mm;
+    border: 1px solid var(--border);
+}
+
+.text-muted { color: var(--muted); font-size: 8pt; }
+.text-right { text-align: right; }
+
+.peer-rank {
+    font-size: 8pt;
+    color: var(--muted);
+}
+
+/* Page content */
+.page-content {
+    background: white;
+}
+  </style>
+</head>
+<body>
+
+<!-- ===================================================
+     PAGE 1: COVER
+     =================================================== -->
+<div class="cover">
+  <div class="cover-logo">napps</div>
+  <div class="cover-tagline">Performance Analytics</div>
+
+  <div class="cover-brand">Acme UK</div>
+  <div class="cover-period">February 2026 Performance Report</div>
+
+  <div class="cover-flag-badge average">
+    Average
+  </div>
+
+  <div class="cover-summary">
+    "Acme UK showed mixed performance in February 2026. While conversion rate and AOV improved month-over-month, cart abandonment remains elevated and sessions declined by 8.3%. The brand ranks in the middle third among peers, with strong repeat purchase behaviour partially offsetting traffic challenges."
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 2: EXECUTIVE SUMMARY
+     =================================================== -->
+<div class="page-content">
+<div class="section-title">Executive Summary</div>
+
+<p style="font-size:10pt; line-height:1.65; margin-bottom:5mm;">
+  Acme UK showed mixed performance in February 2026. While conversion rate and AOV improved month-over-month, cart abandonment remains elevated and sessions declined by 8.3%. The brand ranks in the middle third among peers, with strong repeat purchase behaviour partially offsetting traffic challenges. Total sales reached &euro;124,350, a 3.2% increase from January, driven primarily by higher average order values rather than volume growth. Focus areas for March should include traffic acquisition and reducing cart abandonment through checkout optimisation.
+</p>
+
+<div class="sub-title">Metrics at a Glance &mdash; February 2026</div>
+
+<table class="metrics-table">
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+      <th>vs. Prior Month</th>
+      <th>Peer Rank</th>
+      <th>Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total Sales</td>
+      <td>&euro;124,350.00</td>
+      <td class="mom-up">&#9650; 3.2%</td>
+      <td class="peer-rank">#22 / 48</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Conversion Rate</td>
+      <td>2.85%</td>
+      <td class="mom-up">&#9650; 5.1%</td>
+      <td class="peer-rank">#15 / 48</td>
+      <td><span class="badge good">Good</span></td>
+    </tr>
+    <tr>
+      <td>Average Order Value (AOV)</td>
+      <td>&euro;67.20</td>
+      <td class="mom-up">&#9650; 4.7%</td>
+      <td class="peer-rank">#18 / 48</td>
+      <td><span class="badge good">Good</span></td>
+    </tr>
+    <tr>
+      <td>Add-to-Cart Rate</td>
+      <td>8.42%</td>
+      <td class="mom-up">&#9650; 1.3%</td>
+      <td class="peer-rank">#20 / 48</td>
+      <td><span class="badge average">Average</span></td>
+    </tr>
+    <tr>
+      <td>Cart Abandonment Rate</td>
+      <td>71.50%</td>
+      <td class="mom-down">&#9660; 2.1%</td>
+      <td class="peer-rank">#35 / 48</td>
+      <td><span class="badge poor">Poor</span></td>
+    </tr>
+    <tr>
+      <td>Customer Lifetime Value (CLV)</td>
+      <td>&euro;189.40</td>
+      <td class="mom-up">&#9650; 1.8%</td>
+      <td class="peer-rank">#12 / 48</td>
+      <td><span class="badge good">Good</span></td>
+    </tr>
+    <tr>
+      <td>Churn Rate</td>
+      <td>4.20%</td>
+      <td class="mom-flat">&#8594; 0.3%</td>
+      <td class="peer-rank">#24 / 48</td>
+      <td><span class="badge average">Average</span></td>
+    </tr>
+    <tr>
+      <td>Sessions / Traffic</td>
+      <td>43,200</td>
+      <td class="mom-down">&#9660; 8.3%</td>
+      <td class="peer-rank">#30 / 48</td>
+      <td><span class="badge poor">Poor</span></td>
+    </tr>
+    <tr>
+      <td>Refund / Return Rate</td>
+      <td>3.10%</td>
+      <td class="mom-up">&#9650; 0.5%</td>
+      <td class="peer-rank">#10 / 48</td>
+      <td><span class="badge good">Good</span></td>
+    </tr>
+    <tr>
+      <td>Repeat Purchase Rate</td>
+      <td>28.50%</td>
+      <td class="mom-up">&#9650; 2.4%</td>
+      <td class="peer-rank">#8 / 48</td>
+      <td><span class="badge good">Good</span></td>
+    </tr>
+    <tr>
+      <td>Number of Orders</td>
+      <td>1,851</td>
+      <td class="mom-down">&#9660; 1.4%</td>
+      <td class="peer-rank">#25 / 48</td>
+      <td><span class="badge average">Average</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 3: METRIC DEEP-DIVES
+     =================================================== -->
+<div class="page-content">
+<div class="section-title">Metric Deep-Dives</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Conversion Rate</span>
+    <span class="badge good">Good</span>
+  </div>
+  <div class="metric-card-value">2.85%</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-up">&#9650; 5.1%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): 2.50%
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): 2.30%
+    &nbsp;&middot;&nbsp;
+    Peer rank: #15 / 48
+  </div>
+  <div class="metric-card-narrative">
+    Conversion rate improved significantly, rising from 2.71% in January to 2.85% in February. This places Acme UK well above both the fashion sector threshold (2.50%) and the universal industry benchmark (2.30%). The improvement was likely driven by the mid-month site redesign that streamlined the product detail pages. Continue monitoring to confirm the trend holds.
+  </div>
+</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Average Order Value (AOV)</span>
+    <span class="badge good">Good</span>
+  </div>
+  <div class="metric-card-value">&euro;67.20</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-up">&#9650; 4.7%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): &euro;55.00
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): &euro;50.00
+    &nbsp;&middot;&nbsp;
+    Peer rank: #18 / 48
+  </div>
+  <div class="metric-card-narrative">
+    AOV rose from &euro;64.18 to &euro;67.20, comfortably above sector and industry benchmarks. Cross-sell widgets and the &ldquo;complete the look&rdquo; feature appear to be driving upsell effectively. Consider A/B testing bundle pricing to push AOV further.
+  </div>
+</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Cart Abandonment Rate</span>
+    <span class="badge poor">Poor</span>
+  </div>
+  <div class="metric-card-value">71.50%</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-down">&#9660; 2.1%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): 65.00%
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): 68.00%
+    &nbsp;&middot;&nbsp;
+    Peer rank: #35 / 48
+  </div>
+  <div class="metric-card-narrative">
+    Cart abandonment worsened from 70.03% to 71.50%, moving further above the sector threshold of 65%. This is the weakest metric for Acme UK this month. The checkout flow has 4 steps, which is above the 3-step best practice. Shipping cost visibility may also be a factor &mdash; consider showing estimated delivery costs earlier in the funnel.
+  </div>
+</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Sessions / Traffic</span>
+    <span class="badge poor">Poor</span>
+  </div>
+  <div class="metric-card-value">43,200</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-down">&#9660; 8.3%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): 50,000
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): 45,000
+    &nbsp;&middot;&nbsp;
+    Peer rank: #30 / 48
+  </div>
+  <div class="metric-card-narrative">
+    Sessions dropped 8.3% from 47,112 in January. This is below both sector and industry benchmarks. February is typically a softer month for fashion, but the decline is steeper than the peer average of -3.1%. Paid social spend was reduced by 20% in February, which likely contributed. Review channel mix and consider reallocating budget to higher-performing acquisition channels.
+  </div>
+</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Customer Lifetime Value (CLV)</span>
+    <span class="badge good">Good</span>
+  </div>
+  <div class="metric-card-value">&euro;189.40</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-up">&#9650; 1.8%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): &euro;150.00
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): &euro;130.00
+    &nbsp;&middot;&nbsp;
+    Peer rank: #12 / 48
+  </div>
+  <div class="metric-card-narrative">
+    CLV remains a strong point for Acme UK at &euro;189.40, well above both thresholds. The loyalty programme launched in Q4 2025 continues to drive repeat value. This metric has shown steady growth for 4 consecutive months.
+  </div>
+</div>
+
+<div class="metric-card no-break">
+  <div class="metric-card-header">
+    <span class="metric-card-name">Repeat Purchase Rate</span>
+    <span class="badge good">Good</span>
+  </div>
+  <div class="metric-card-value">28.50%</div>
+  <div class="metric-card-context">
+    MoM: <span class="mom-up">&#9650; 2.4%</span>
+    &nbsp;&middot;&nbsp;
+    Sector threshold (Good): 25.00%
+    &nbsp;&middot;&nbsp;
+    Industry benchmark (Good): 22.00%
+    &nbsp;&middot;&nbsp;
+    Peer rank: #8 / 48
+  </div>
+  <div class="metric-card-narrative">
+    Repeat purchase rate climbed to 28.50%, ranking #8 among all 48 brands. This is a top-quartile result and reflects strong customer retention. Email remarketing campaigns and the post-purchase flow are performing well.
+  </div>
+</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 4: RECOMMENDATIONS
+     =================================================== -->
+<div class="page-content">
+<div class="section-title">Improvement Recommendations</div>
+
+<div class="recommendation high no-break">
+  <div class="recommendation-title">
+    Reduce Cart Abandonment Through Checkout Optimisation
+    <span class="badge priority-high" style="margin-left:4px;">High</span>
+  </div>
+  <div class="recommendation-text">Cart abandonment at 71.5% is well above the sector threshold of 65%. Consider simplifying the checkout to 3 steps, showing shipping costs on the product page, and adding guest checkout. A/B test exit-intent overlays offering a small discount to recover abandoning users. Target: reduce to below 68% by April.</div>
+</div>
+
+<div class="recommendation high no-break">
+  <div class="recommendation-title">
+    Recover Lost Traffic With Channel Diversification
+    <span class="badge priority-high" style="margin-left:4px;">High</span>
+  </div>
+  <div class="recommendation-text">Sessions dropped 8.3% while peers averaged only -3.1%. The reduction in paid social spend is the likely cause. Evaluate ROI per channel and consider shifting budget toward search and email. Organic content (SEO blog posts, social UGC) can provide more sustainable traffic. Target: return to 47k+ sessions by April.</div>
+</div>
+
+<div class="recommendation medium no-break">
+  <div class="recommendation-title">
+    Improve Add-to-Cart Rate With Better Product Discovery
+    <span class="badge priority-medium" style="margin-left:4px;">Medium</span>
+  </div>
+  <div class="recommendation-text">Add-to-cart rate at 8.42% is adequate but has room for improvement. Consider adding &ldquo;recently viewed&rdquo; and &ldquo;customers also bought&rdquo; modules on product pages. Improving search relevance and filtering could also help users find products faster.</div>
+</div>
+
+<div class="recommendation low no-break">
+  <div class="recommendation-title">
+    Monitor Churn Rate Closely
+    <span class="badge priority-low" style="margin-left:4px;">Low</span>
+  </div>
+  <div class="recommendation-text">Churn at 4.20% is stable but sits near the Average/Poor boundary. No immediate action required, but set up automated alerts if churn exceeds 5% in any given month. The loyalty programme is helping &mdash; consider expanding tier benefits to further reduce churn risk.</div>
+</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 5: APPENDIX
+     =================================================== -->
+<div class="page-content">
+<div class="section-title">Appendix &mdash; Raw Data</div>
+
+<table class="raw-data">
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+      <th>Previous Month</th>
+      <th>MoM Change</th>
+      <th>Flag</th>
+      <th>Peer Rank</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total Sales</td>
+      <td>&euro;124,350.00</td>
+      <td>&euro;120,495.00</td>
+      <td class="mom-up">&#9650; 3.2%</td>
+      <td>&mdash;</td>
+      <td>#22 / 48</td>
+    </tr>
+    <tr>
+      <td>Conversion Rate</td>
+      <td>2.85%</td>
+      <td>2.71%</td>
+      <td class="mom-up">&#9650; 5.1%</td>
+      <td><span class="badge good">Good</span></td>
+      <td>#15 / 48</td>
+    </tr>
+    <tr>
+      <td>Average Order Value (AOV)</td>
+      <td>&euro;67.20</td>
+      <td>&euro;64.18</td>
+      <td class="mom-up">&#9650; 4.7%</td>
+      <td><span class="badge good">Good</span></td>
+      <td>#18 / 48</td>
+    </tr>
+    <tr>
+      <td>Add-to-Cart Rate</td>
+      <td>8.42%</td>
+      <td>8.31%</td>
+      <td class="mom-up">&#9650; 1.3%</td>
+      <td><span class="badge average">Average</span></td>
+      <td>#20 / 48</td>
+    </tr>
+    <tr>
+      <td>Cart Abandonment Rate</td>
+      <td>71.50%</td>
+      <td>70.03%</td>
+      <td class="mom-down">&#9660; 2.1%</td>
+      <td><span class="badge poor">Poor</span></td>
+      <td>#35 / 48</td>
+    </tr>
+    <tr>
+      <td>Customer Lifetime Value (CLV)</td>
+      <td>&euro;189.40</td>
+      <td>&euro;186.05</td>
+      <td class="mom-up">&#9650; 1.8%</td>
+      <td><span class="badge good">Good</span></td>
+      <td>#12 / 48</td>
+    </tr>
+    <tr>
+      <td>Churn Rate</td>
+      <td>4.20%</td>
+      <td>4.19%</td>
+      <td class="mom-flat">&#8594; 0.3%</td>
+      <td><span class="badge average">Average</span></td>
+      <td>#24 / 48</td>
+    </tr>
+    <tr>
+      <td>Sessions / Traffic</td>
+      <td>43,200</td>
+      <td>47,112</td>
+      <td class="mom-down">&#9660; 8.3%</td>
+      <td><span class="badge poor">Poor</span></td>
+      <td>#30 / 48</td>
+    </tr>
+    <tr>
+      <td>Refund / Return Rate</td>
+      <td>3.10%</td>
+      <td>3.12%</td>
+      <td class="mom-up">&#9650; 0.5%</td>
+      <td><span class="badge good">Good</span></td>
+      <td>#10 / 48</td>
+    </tr>
+    <tr>
+      <td>Repeat Purchase Rate</td>
+      <td>28.50%</td>
+      <td>27.83%</td>
+      <td class="mom-up">&#9650; 2.4%</td>
+      <td><span class="badge good">Good</span></td>
+      <td>#8 / 48</td>
+    </tr>
+    <tr>
+      <td>Number of Orders</td>
+      <td>1,851</td>
+      <td>1,877</td>
+      <td class="mom-down">&#9660; 1.4%</td>
+      <td><span class="badge average">Average</span></td>
+      <td>#25 / 48</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top:8mm;">
+  <div class="sub-title">Data Sources</div>
+  <ul style="font-size:8.5pt; color:#4b5563; margin-top:2mm; padding-left:4mm;">
+    <li><b>All Metrics:</b> Napps Analytics API &middot; Period: 2026-02</li>
+    <li><b>Benchmarks:</b> Industry benchmarks from Napps benchmark_config</li>
+    <li><b>Peer Comparison:</b> 48 active brands on Napps platform</li>
+  </ul>
+</div>
+
+<div style="margin-top:8mm; border-top:1px solid #e5e7eb; padding-top:4mm;">
+  <p class="text-muted">
+    Generated by Napps Performance Analytics &middot; 2026-03-02 08:00 &middot; Confidential
+  </p>
+</div>
+</div>
+
+</body>
+</html>

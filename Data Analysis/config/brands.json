@@ -1,0 +1,13 @@
+[
+  {
+    "brand_id": "example-brand",
+    "brand_name": "Example Brand",
+    "sector": "fashion",
+    "shopify_store_url": "example-brand.myshopify.com",
+    "shopify_token_key": "SHOPIFY_TOKEN_EXAMPLE_BRAND",
+    "napps_client_id_key": "NAPPS_CLIENT_ID_EXAMPLE_BRAND",
+    "napps_client_secret_key": "NAPPS_CLIENT_SECRET_EXAMPLE_BRAND",
+    "active": true,
+    "thresholds": {}
+  }
+]

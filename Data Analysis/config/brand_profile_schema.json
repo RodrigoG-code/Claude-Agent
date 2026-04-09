@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NappsBrandProfile",
+  "description": "Brand profile passed to Claude alongside metric data. Enables contextualised, sector-aware recommendations that avoid suggesting features already active.",
+  "type": "object",
+  "required": ["brand_id", "brand_name", "sector", "avg_price_point", "months_on_platform", "active_napps_features", "markets"],
+  "additionalProperties": false,
+  "properties": {
+
+    "brand_id": {
+      "type": "string"
+    },
+
+    "brand_name": {
+      "type": "string",
+      "description": "Display name of the brand."
+    },
+
+    "sector": {
+      "type": "string",
+      "enum": [
+        "fashion_apparel",
+        "beauty_cosmetics",
+        "electronics_tech",
+        "home_living",
+        "sports_outdoors",
+        "food_beverage",
+        "luxury_jewellery",
+        "other"
+      ],
+      "description": "Primary sector. Determines which benchmark table applies."
+    },
+
+    "avg_price_point": {
+      "type": "string",
+      "enum": ["budget", "mid", "premium", "luxury"],
+      "description": "Rough price positioning. budget = <€30 AOV, mid = €30–€100, premium = €100–€300, luxury = >€300."
+    },
+
+    "months_on_platform": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How many months the brand has been live on NAPPS. Affects expectation-setting — brands in month 1–3 may have lower baselines."
+    },
+
+    "active_napps_features": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of NAPPS feature names currently active for this brand. Claude must NOT recommend features already on this list. E.g. ['Cart Abandonment Notifications', 'Loyalty Program Integration', 'Free Shipping Progress Bar']."
+    },
+
+    "inactive_napps_features": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. Features explicitly available to this brand on their plan but not yet activated. Prioritise recommending these — they are zero-cost quick wins.",
+      "default": []
+    },
+
+    "markets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Markets/countries this brand sells into. E.g. ['PT', 'ES', 'UK']. Used to contextualise localisation and market-specific features."
+    },
+
+    "languages": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Languages the app is available in. E.g. ['pt', 'es', 'en']. Informs relevance of localisation features.",
+      "default": []
+    },
+
+    "has_physical_stores": {
+      "type": "boolean",
+      "description": "Whether the brand has physical retail locations. Enables QR code, in-store stock, and omnichannel feature recommendations.",
+      "default": false
+    },
+
+    "has_loyalty_program": {
+      "type": "boolean",
+      "description": "Whether the brand has an active loyalty program (on NAPPS or elsewhere). If true and not yet integrated with NAPPS, flag as a priority.",
+      "default": false
+    },
+
+    "has_subscription_products": {
+      "type": "boolean",
+      "description": "Whether the brand sells subscription or recurring products. Informs Recharge recommendation relevance.",
+      "default": false
+    },
+
+    "previous_recommendations": {
+      "type": "array",
+      "description": "Top recommendations from the previous month's report. Claude should not repeat these verbatim — either escalate, report on outcome, or pivot.",
+      "items": {
+        "type": "object",
+        "required": ["napps_feature", "title"],
+        "properties": {
+          "napps_feature": { "type": "string" },
+          "title": { "type": "string" },
+          "metric_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "default": []
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "Optional free-text field for account managers to add context. E.g. 'Brand is running a major campaign in April', 'New collection launching next month', 'Recently migrated from Tapcart'. Claude should factor this into narrative framing.",
+      "default": ""
+    }
+  }
+}

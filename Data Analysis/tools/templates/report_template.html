@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ brand.name }} — Performance Report {{ report_month }}</title>
+  <style>{{ styles }}</style>
+</head>
+<body>
+
+<!-- ===================================================
+     PAGE 1: COVER — all inline styles for WeasyPrint
+     =================================================== -->
+<div style="page:cover-page; page-break-after:always; width:210mm; height:297mm; background:radial-gradient(ellipse at 60% 40%, #0057FF 0%, #0038D4 40%, #001aaa 70%, #00108a 100%);">
+
+  <!-- Topbar -->
+  <table style="width:100%; background:rgba(0,10,80,0.45); border-bottom:1px solid rgba(255,255,255,0.15); border-collapse:collapse;">
+    <tr>
+      <td style="padding:10px 0 10px 20mm; vertical-align:middle;">
+        <img src="{{ napps_logo_b64 }}" style="width:28px; height:28px; border-radius:6px; vertical-align:middle;" />
+        <span style="font-size:15px; font-weight:bold; color:#ffffff; letter-spacing:0.02em; vertical-align:middle; padding-left:8px;">napps</span>
+        <br/>
+        <span style="font-size:9px; color:rgba(255,255,255,0.65); letter-spacing:0.14em; text-transform:uppercase; padding-left:36px;">Performance Analytics</span>
+      </td>
+      <td style="padding:10px 20mm 10px 0; vertical-align:middle; text-align:right;">
+        <div style="font-size:11px; color:rgba(255,255,255,0.75);">{{ report_month_display }}</div>
+        <div style="font-size:9px; color:rgba(255,255,255,0.5); letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;">Confidential</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Body content -->
+  <div style="padding:8mm 20mm 0 20mm;">
+
+    <!-- Sector row -->
+    <div style="margin-bottom:8px; margin-top:2mm;">
+      <span style="font-size:10px; color:rgba(255,255,255,0.75); letter-spacing:0.12em; text-transform:uppercase;">{{ brand.sector_display }}</span>
+      <span style="font-size:10px; color:rgba(255,255,255,0.4); padding:0 6px;">&middot;</span>
+      <span style="font-size:10px; color:rgba(255,255,255,0.75); letter-spacing:0.12em; text-transform:uppercase;">Shopify &middot; Native App</span>
+      {% if brand.market %}
+      <span style="font-size:10px; color:rgba(255,255,255,0.4); padding:0 6px;">&middot;</span>
+      <span style="font-size:10px; color:rgba(255,255,255,0.75); letter-spacing:0.12em; text-transform:uppercase;">{{ brand.market }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Brand name -->
+    <div style="font-size:62px; font-weight:bold; color:#ffffff; line-height:0.95; letter-spacing:-0.02em; margin-bottom:12mm;">{{ brand.name }}</div>
+
+    <!-- Flag badge -->
+    <div style="margin-bottom:8mm;">
+      {% if overall_flag == 'Good' %}
+      <span style="display:inline-block; padding:5px 13px; border-radius:100px; font-size:11px; font-weight:bold; background:rgba(0,71,255,0.25); color:#80a8ff; border:0.5px solid rgba(0,71,255,0.4);">{{ overall_flag }}</span>
+      {% elif overall_flag == 'Poor' %}
+      <span style="display:inline-block; padding:5px 13px; border-radius:100px; font-size:11px; font-weight:bold; background:rgba(226,75,74,0.2); color:#F09595; border:0.5px solid rgba(226,75,74,0.3);">{{ overall_flag }}</span>
+      {% else %}
+      <span style="display:inline-block; padding:5px 13px; border-radius:100px; font-size:11px; font-weight:bold; background:rgba(255,165,0,0.22); color:#ffc44d; border:0.5px solid rgba(255,165,0,0.45);">{{ overall_flag }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Hero metric -->
+    {% if sessions_highlight %}
+    <div style="text-align:center; margin-bottom:10mm;">
+      <div style="font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">{{ sessions_highlight.label }}</div>
+      <div style="font-size:76px; font-weight:bold; color:#ffffff; line-height:1; letter-spacing:-0.03em;">{{ sessions_highlight.value }}</div>
+      <div style="margin-top:8px;">
+        <span style="font-size:12px; font-weight:bold; color:#97C459;">{{ sessions_highlight.mom }}</span>
+        <span style="font-size:12px; color:rgba(255,255,255,0.45); padding-left:10px;">{{ sessions_highlight.rank }} on the platform</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Overview card -->
+    {% if cover_headline %}
+    <div style="background:rgba(0,0,0,0.25); border-radius:8px; padding:12px 14px; margin-bottom:10mm;">
+      <div style="font-size:9px; font-weight:bold; color:rgba(255,255,255,0.5); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:7px;">Overview</div>
+      <div style="font-size:12px; font-style:italic; line-height:1.7; color:rgba(255,255,255,0.85);">{{ cover_headline | safe }}</div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- Scorecard -->
+  <table style="width:100%; table-layout:fixed; background:rgba(0,8,70,0.5); border-top:1px solid rgba(255,255,255,0.18); border-collapse:collapse;">
+    <tr>
+      {% for m in cover_metrics %}
+      <td style="width:25%; padding:13px 20px; border-right:1px solid rgba(255,255,255,0.07); vertical-align:top;{% if loop.first %} padding-left:20mm;{% endif %}{% if loop.last %} border-right:none; padding-right:20mm;{% endif %}">
+        <div style="font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.75); margin-bottom:5px;">{{ m.label }}</div>
+        <div style="font-size:18px; font-weight:bold; color:#ffffff; line-height:1; margin-bottom:4px;">{{ m.value }}</div>
+        <table style="width:100%; border-collapse:collapse;"><tr>
+          <td style="font-size:10px; font-weight:bold; color:{% if m.mom_dir == 'up' %}#97C459{% else %}#ff8080{% endif %};">{{ m.mom }}</td>
+          <td style="text-align:right; font-size:10px; color:{% if m.flag == 'good' %}#97C459{% elif m.flag == 'Average' %}#ffc44d{% elif m.flag == 'Poor' %}#ff8080{% else %}#97C459{% endif %};">{% if m.flag == 'good' %}{{ m.rank }}{% else %}{{ m.flag }}{% endif %}</td>
+        </tr></table>
+      </td>
+      {% endfor %}
+    </tr>
+  </table>
+
+</div>
+
+<!-- ===================================================
+     PAGE 2: EXECUTIVE SUMMARY
+     =================================================== -->
+<div class="page-header">
+  <div class="page-header-left">
+    <img src="{{ napps_logo_b64 }}" class="page-header-logo" />
+    <span class="page-header-brand">{{ brand.name }}</span>
+    <span class="page-header-period">{{ report_month_display }}</span>
+  </div>
+  <div class="page-header-right">
+    <span class="page-header-napps">napps</span>
+  </div>
+</div>
+
+<div class="section-title">Executive Summary</div>
+
+{% if diagnostic_pattern %}
+<div class="diagnostic-alert">
+  <strong>Diagnostic Pattern Detected:</strong> {{ diagnostic_pattern }}
+</div>
+{% endif %}
+
+<div class="exec-summary">{{ executive_summary | safe }}</div>
+
+<div class="sub-title">Metrics at a Glance — {{ report_month_display }}</div>
+
+<table class="metrics-table">
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+      <th>vs. Prior Month</th>
+      <th>Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in metrics %}
+    <tr>
+      <td>{{ m.label }}</td>
+      <td>{{ m.display_value }}</td>
+      <td class="{{ 'mom-up' if m.mom_dir == 'up' else ('mom-down' if m.mom_dir == 'down' else 'mom-flat') }}">{{ m.mom }}</td>
+      <td><span class="badge {{ m.flag | lower }}">{{ m.flag }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="page-footer">
+  <div class="page-footer-left">{{ brand.name }} · {{ report_month_display }}</div>
+  <div class="page-footer-right">napps</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 3: PRIORITY METRICS
+     =================================================== -->
+<div class="page-header">
+  <div class="page-header-left">
+    <img src="{{ napps_logo_b64 }}" class="page-header-logo" />
+    <span class="page-header-brand">{{ brand.name }}</span>
+    <span class="page-header-period">{{ report_month_display }}</span>
+  </div>
+  <div class="page-header-right">
+    <span class="page-header-napps">napps</span>
+  </div>
+</div>
+
+<div class="section-title">Priority Metrics</div>
+
+{% for m in priority_metrics %}
+<div class="pm-card no-break">
+  <div class="pm-inner">
+    <div class="pm-header">
+      <div class="pm-header-left">
+        <div class="pm-name">{{ m.name }}</div>
+        <div class="pm-value">{{ m.value }}</div>
+      </div>
+      <div class="pm-header-right">
+        <div class="pm-mom-arrow {{ m.mom_dir }}">{{ m.mom_arrow }} {{ m.mom }}</div>
+        <div class="pm-peer-rank">#{{ m.peer_rank }} / {{ total_brands }}</div>
+        <div class="pm-flag-pill"><span class="badge {{ m.flag | lower }}">{{ m.flag }}</span></div>
+      </div>
+    </div>
+
+    <div class="pm-meta">
+      MoM: {{ m.mom_arrow }} {{ m.mom }}
+      &nbsp;&middot;&nbsp; Sector threshold (Good): {{ m.sector_good }}
+      &nbsp;&middot;&nbsp; Industry benchmark (Good): {{ m.benchmark_good }}
+      &nbsp;&middot;&nbsp; Peer rank: #{{ m.peer_rank }} / {{ total_brands }}
+    </div>
+
+    <div class="pm-bench-table">
+      <div class="pm-bench-cell">
+        <div class="pm-bench-label">Sector Avg</div>
+        <div class="pm-bench-value">{{ m.sector_avg }}</div>
+      </div>
+      <div class="pm-bench-cell">
+        <div class="pm-bench-label">Good Threshold</div>
+        <div class="pm-bench-value">{{ m.sector_good }}</div>
+      </div>
+      <div class="pm-bench-cell">
+        <div class="pm-bench-label">Poor Threshold</div>
+        <div class="pm-bench-value">{{ m.sector_poor }}</div>
+      </div>
+      <div class="pm-bench-cell">
+        <div class="pm-bench-label">Gap to Good</div>
+        <div class="pm-bench-value gap-{{ m.flag | lower }}">{{ m.gap_to_good }}</div>
+      </div>
+    </div>
+
+    <div class="pm-narrative">{{ m.narrative | safe }}</div>
+  </div>
+
+  {% if m.daily_chart_svg %}
+  <div class="pm-chart-label">Daily trend — {{ report_month_display }}</div>
+  <div class="pm-chart">{{ m.daily_chart_svg | safe }}</div>
+  {% endif %}
+</div>
+{% endfor %}
+
+<div class="page-footer">
+  <div class="page-footer-left">{{ brand.name }} · {{ report_month_display }}</div>
+  <div class="page-footer-right">napps</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 4: SUPPORTING METRICS
+     =================================================== -->
+<div class="page-header">
+  <div class="page-header-left">
+    <img src="{{ napps_logo_b64 }}" class="page-header-logo" />
+    <span class="page-header-brand">{{ brand.name }}</span>
+    <span class="page-header-period">{{ report_month_display }}</span>
+  </div>
+  <div class="page-header-right">
+    <span class="page-header-napps">napps</span>
+  </div>
+</div>
+
+<div class="section-title">Supporting Metrics</div>
+
+{% for row_start in range(0, secondary_metrics|length, 3) %}
+<table class="sm-grid">
+  <tr class="sm-row">
+    {% for m in secondary_metrics[row_start:row_start+3] %}
+    <td class="sm-cell">
+      <div class="sm-card">
+        <div class="sm-top">
+          <div class="sm-name">{{ m.name }}</div>
+          <div class="sm-flag"><span class="badge {{ m.flag | lower }}">{{ m.flag }}</span></div>
+        </div>
+        <div class="sm-value" style="color:{% if m.flag == 'Good' %}#3B6D11{% elif m.flag == 'Poor' %}#A32D2D{% else %}#854F0B{% endif %};">{{ m.value }}</div>
+        <div class="sm-bar-track">
+          <div class="sm-bar-fill" style="width:{{ m.bar_pct }}%;background:{% if m.flag == 'Good' %}#639922{% elif m.flag == 'Poor' %}#E24B4A{% else %}#BA7517{% endif %};"></div>
+        </div>
+        <div class="sm-footer">
+          <div class="sm-footer-left">#{{ m.peer_rank }} / {{ total_brands }} &middot; {{ m.threshold_label }}</div>
+          <div class="sm-footer-right {{ m.mom_dir }}">{{ m.mom_arrow }} {{ m.mom }}</div>
+        </div>
+        <div class="sm-narrative">{{ m.narrative | safe }}</div>
+      </div>
+    </td>
+    {% endfor %}
+  </tr>
+</table>
+{% endfor %}
+
+<div class="page-footer">
+  <div class="page-footer-left">{{ brand.name }} · {{ report_month_display }}</div>
+  <div class="page-footer-right">napps</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 5: RECOMMENDATIONS
+     =================================================== -->
+<div class="page-header">
+  <div class="page-header-left">
+    <img src="{{ napps_logo_b64 }}" class="page-header-logo" />
+    <span class="page-header-brand">{{ brand.name }}</span>
+    <span class="page-header-period">{{ report_month_display }}</span>
+  </div>
+  <div class="page-header-right">
+    <span class="page-header-napps">napps</span>
+  </div>
+</div>
+
+<div class="section-title">Improvement Recommendations</div>
+
+{% for rec in recommendations %}
+<div class="rec-card no-break">
+  <div class="rec-number-cell">
+    <div class="rec-number {{ rec.priority | lower }}">{{ loop.index }}</div>
+  </div>
+  <div class="rec-content">
+    <div class="rec-title">{{ rec.title }}</div>
+    {% if rec.feature %}
+    <span class="rec-feature-tag">{{ rec.feature }}</span>
+    {% endif %}
+    <div class="rec-action">{{ rec.action }}</div>
+    {% if rec.why %}<div class="rec-why"><strong>Why:</strong> {{ rec.why }}</div>{% endif %}
+    {% if rec.effort %}<div class="rec-effort">Effort: {{ rec.effort }}</div>{% endif %}
+  </div>
+</div>
+{% endfor %}
+
+<div class="page-footer">
+  <div class="page-footer-left">{{ brand.name }} · {{ report_month_display }}</div>
+  <div class="page-footer-right">napps</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===================================================
+     PAGE 6: APPENDIX
+     =================================================== -->
+<div class="page-header">
+  <div class="page-header-left">
+    <img src="{{ napps_logo_b64 }}" class="page-header-logo" />
+    <span class="page-header-brand">{{ brand.name }}</span>
+    <span class="page-header-period">{{ report_month_display }}</span>
+  </div>
+  <div class="page-header-right">
+    <span class="page-header-napps">napps</span>
+  </div>
+</div>
+
+<div class="section-title">Appendix — Raw Data</div>
+
+<table class="raw-data">
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+      <th>Previous Month</th>
+      <th>MoM Change</th>
+      <th>Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in metrics %}
+    <tr>
+      <td>{{ m.label }}</td>
+      <td>{{ m.display_value }}</td>
+      <td>{{ m.prev_value }}</td>
+      <td class="{{ 'mom-up' if m.mom_dir == 'up' else ('mom-down' if m.mom_dir == 'down' else 'mom-flat') }}">{{ m.mom }}</td>
+      <td><span class="badge {{ m.flag | lower }}">{{ m.flag }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="margin-top:8mm;">
+  <div class="sub-title">Data Sources</div>
+  <ul style="font-size:8.5pt; color:#4b5563; margin-top:2mm; padding-left:4mm;">
+    <li><b>All Metrics:</b> Napps Analytics API · Period: {{ report_month }}</li>
+    <li><b>Benchmarks:</b> Littledata (2,800 Shopify stores), Opensend, MobiLoud, Baymard Institute</li>
+    <li><b>Peer Comparison:</b> {{ total_brands }} active brands on Napps platform</li>
+    <li><b>Insights:</b> Generated by Claude (claude-sonnet-4-6) with NAPPS feature context</li>
+  </ul>
+</div>
+
+<div style="margin-top:8mm; border-top:1px solid #e5e7eb; padding-top:4mm;">
+  <p class="text-muted">
+    Generated by Napps Performance Analytics · {{ generated_at }} · Confidential
+  </p>
+</div>
+
+<div class="page-footer">
+  <div class="page-footer-left">{{ brand.name }} · {{ report_month_display }}</div>
+  <div class="page-footer-right">napps</div>
+</div>
+
+</body>
+</html>

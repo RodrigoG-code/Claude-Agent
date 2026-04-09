@@ -1,0 +1,331 @@
+/* ============================================================
+   Napps Monthly Brand Performance Report — Print Stylesheet
+   WeasyPrint + Jinja2 · Updated April 2026
+   ============================================================ */
+
+/* ===== Page rules ===== */
+@page {
+    size: A4 portrait;
+    margin: 20mm 18mm 18mm 18mm;
+
+    @bottom-center {
+        content: none;
+    }
+    @bottom-right {
+        content: none;
+    }
+}
+
+@page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right  { content: none; }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    color: #1f2937;
+    line-height: 1.55;
+}
+
+/* ===== Colour system ===== */
+:root {
+    --napps:   #0047FF;
+    --good:    #16a34a;
+    --good-bg: #dcfce7;
+    --avg:     #d97706;
+    --avg-bg:  #fef9c3;
+    --poor:    #dc2626;
+    --poor-bg: #fee2e2;
+    --muted:   #6b7280;
+    --border:  #e5e7eb;
+}
+
+/* ===== Page breaks ===== */
+.page-break { page-break-after: always; height: 0; margin: 0; padding: 0; border: none; }
+.no-break   { page-break-inside: avoid; }
+
+/* ===== Inner page header ===== */
+.page-header {
+    display: table;
+    width: 100%;
+    margin-bottom: 5mm;
+    padding-bottom: 3mm;
+    border-bottom: 2px solid var(--napps);
+}
+.page-header-left { display: table-cell; vertical-align: middle; }
+.page-header-right { display: table-cell; vertical-align: middle; text-align: right; }
+.page-header-logo { width: 20px; height: 20px; border-radius: 4px; vertical-align: middle; margin-right: 6px; }
+.page-header-brand { font-size: 11pt; font-weight: 700; color: #111827; vertical-align: middle; }
+.page-header-period { font-size: 9pt; color: var(--muted); margin-left: 8px; vertical-align: middle; }
+.page-header-napps { font-size: 11pt; font-weight: 800; color: var(--napps); letter-spacing: -0.3px; }
+
+/* ===== Inner page footer ===== */
+.page-footer {
+    margin-top: auto;
+    padding-top: 3mm;
+    border-top: 1px solid var(--border);
+    display: table;
+    width: 100%;
+    font-size: 8pt;
+    color: var(--muted);
+}
+.page-footer-left { display: table-cell; vertical-align: middle; }
+.page-footer-right { display: table-cell; vertical-align: middle; text-align: right; font-weight: 800; color: var(--napps); font-size: 9pt; }
+
+/* ============================================================
+   COVER PAGE
+   ============================================================ */
+@page cover-page { margin: 0; @bottom-center { content: none; } @bottom-right { content: none; } }
+/* Cover uses inline styles for all colours — see report_template.html */
+
+/* ============================================================
+   EXECUTIVE SUMMARY PAGE
+   ============================================================ */
+.diagnostic-alert {
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 5mm;
+    font-size: 9pt;
+    color: #92400e;
+    line-height: 1.5;
+}
+.diagnostic-alert strong { color: #78350f; }
+
+.exec-summary {
+    font-size: 10pt;
+    line-height: 1.65;
+    margin-bottom: 5mm;
+    color: #1f2937;
+}
+.exec-summary strong { color: #111827; }
+
+/* Metrics at a glance table */
+table.metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-top: 3mm;
+}
+table.metrics-table th {
+    background: #f3f4f6;
+    color: #374151;
+    font-weight: 600;
+    text-align: left;
+    padding: 2.5mm 3mm;
+    border-bottom: 1px solid var(--border);
+}
+table.metrics-table td {
+    padding: 2.5mm 3mm;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+table.metrics-table tr:last-child td { border-bottom: none; }
+
+/* ============================================================
+   FLAG BADGES
+   ============================================================ */
+.badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 12px;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.badge.good    { background: #EAF3DE; color: #3B6D11; }
+.badge.average { background: #FAEEDA; color: #854F0B; }
+.badge.poor    { background: #FCEBEB; color: #A32D2D; }
+.badge.unknown { background: #f3f4f6; color: var(--muted); }
+
+.badge.priority-high   { background: #FCEBEB; color: #A32D2D; }
+.badge.priority-medium { background: #FAEEDA; color: #854F0B; }
+.badge.priority-low    { background: #dbeafe; color: #1d4ed8; }
+
+/* MoM colours */
+.mom-up   { color: #2d7a1f; font-weight: 600; }
+.mom-down { color: #A32D2D; font-weight: 600; }
+.mom-flat { color: var(--muted); }
+
+/* ============================================================
+   PRIORITY METRICS PAGE
+   ============================================================ */
+.pm-card {
+    border: 0.5px solid #d1d5db;
+    border-radius: 10px;
+    margin-bottom: 6mm;
+    page-break-inside: avoid;
+    overflow: hidden;
+}
+
+.pm-inner { padding: 16px 16px 0 16px; }
+
+.pm-header { display: table; width: 100%; }
+.pm-header-left { display: table-cell; vertical-align: top; }
+.pm-header-right { display: table-cell; vertical-align: top; text-align: right; width: 120px; }
+
+.pm-name { font-size: 9px; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.1em; margin-bottom: 4px; }
+.pm-value { font-size: 38px; font-weight: bold; color: #111827; line-height: 1; margin-bottom: 4px; }
+
+.pm-mom-arrow { font-size: 12px; font-weight: bold; }
+.pm-mom-arrow.up { color: #2d7a1f; }
+.pm-mom-arrow.down { color: #A32D2D; }
+.pm-peer-rank { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+.pm-flag-pill { margin-top: 4px; }
+
+.pm-meta {
+    font-size: 10px; color: #9ca3af;
+    border-top: 0.5px solid #e5e7eb;
+    padding: 8px 0;
+    margin-top: 10px;
+}
+
+.pm-bench-table {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    border-top: 0.5px solid #e5e7eb;
+    border-bottom: 0.5px solid #e5e7eb;
+    margin: 6px 0;
+}
+.pm-bench-cell { display: table-cell; padding: 8px 0; vertical-align: top; }
+.pm-bench-label { font-size: 9px; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.08em; margin-bottom: 3px; }
+.pm-bench-value { font-size: 12px; font-weight: bold; color: #374151; }
+.pm-bench-value.gap-good { color: #3B6D11; }
+.pm-bench-value.gap-avg  { color: #854F0B; }
+.pm-bench-value.gap-poor { color: #A32D2D; }
+
+.pm-narrative {
+    font-size: 12px; color: #555; line-height: 1.65; margin-top: 10px; padding-bottom: 10px;
+}
+.pm-narrative .napps-feature { color: #0047FF; font-weight: 600; }
+
+.pm-chart-label {
+    font-size: 9px; text-transform: uppercase; color: #9ca3af;
+    letter-spacing: 0.1em; text-align: right; padding: 0 16px; margin-bottom: 2px;
+}
+.pm-chart { width: 100%; overflow: hidden; }
+.pm-chart svg { display: block; width: 100%; }
+
+/* ============================================================
+   SUPPORTING METRICS PAGE
+   ============================================================ */
+.sm-grid {
+    display: table;
+    width: calc(100% + 16px);
+    table-layout: fixed;
+    border-spacing: 8px 0;
+    margin-left: -8px;
+}
+.sm-row { display: table-row; }
+.sm-cell {
+    display: table-cell;
+    width: 33.333%;
+    vertical-align: top;
+    height: 200px;
+}
+.sm-card {
+    border: 0.5px solid #d1d5db;
+    border-radius: 9px;
+    padding: 10px 11px;
+    height: 200px;
+    overflow: hidden;
+}
+.sm-top { display: table; width: 100%; margin-bottom: 4px; }
+.sm-name { display: table-cell; font-size: 10px; color: #9ca3af; vertical-align: middle; }
+.sm-flag { display: table-cell; text-align: right; vertical-align: middle; }
+
+.sm-value { font-size: 22px; font-weight: bold; color: #111827; margin-bottom: 6px; }
+
+.sm-bar-track { width: 100%; height: 3px; background: #f0f0f0; border-radius: 2px; margin-bottom: 6px; overflow: hidden; }
+.sm-bar-fill { height: 3px; border-radius: 2px; }
+
+.sm-footer { display: table; width: 100%; font-size: 10px; }
+.sm-footer-left { display: table-cell; color: #9ca3af; vertical-align: middle; }
+.sm-footer-right { display: table-cell; text-align: right; vertical-align: middle; font-weight: bold; }
+.sm-footer-right.up { color: #2d7a1f; }
+.sm-footer-right.down { color: #A32D2D; }
+
+.sm-narrative {
+    font-size: 11px; line-height: 1.55; color: #555;
+    border-top: 1px solid #eee;
+    margin-top: 7px; padding-top: 7px;
+    display: block; width: 100%;
+}
+
+/* ============================================================
+   RECOMMENDATIONS PAGE
+   ============================================================ */
+.rec-card {
+    display: table;
+    width: 100%;
+    margin-bottom: 4mm;
+    page-break-inside: avoid;
+}
+.rec-number-cell { display: table-cell; width: 32px; vertical-align: top; padding-top: 2px; }
+.rec-number {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    line-height: 26px;
+}
+.rec-number.high   { background: var(--poor); }
+.rec-number.medium { background: var(--avg); }
+.rec-number.low    { background: #2563eb; }
+
+.rec-content { display: table-cell; vertical-align: top; padding-left: 3mm; }
+.rec-title { font-size: 10pt; font-weight: 700; color: #111827; margin-bottom: 1mm; }
+.rec-feature-tag { display: inline-block; background: #eff6ff; color: var(--napps); font-size: 8pt; font-weight: 600; padding: 1px 8px; border-radius: 10px; margin-bottom: 2mm; }
+.rec-action { font-size: 9pt; color: #374151; line-height: 1.5; margin-bottom: 1mm; }
+.rec-why { font-size: 8.5pt; color: var(--muted); line-height: 1.4; margin-bottom: 1mm; }
+.rec-effort { font-size: 8pt; color: var(--muted); }
+
+/* ============================================================
+   APPENDIX PAGE
+   ============================================================ */
+table.raw-data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+    margin-top: 3mm;
+}
+table.raw-data th {
+    background: #f3f4f6;
+    padding: 2mm 2.5mm;
+    border: 1px solid var(--border);
+    font-weight: 600;
+    text-align: left;
+}
+table.raw-data td {
+    padding: 2mm 2.5mm;
+    border: 1px solid var(--border);
+}
+
+.text-muted { color: var(--muted); font-size: 8pt; }
+
+/* ===== Section titles ===== */
+.section-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--napps);
+    border-bottom: 2px solid var(--napps);
+    padding-bottom: 2mm;
+    margin-bottom: 5mm;
+    margin-top: 2mm;
+}
+
+.sub-title {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 5mm;
+    margin-bottom: 2mm;
+}
